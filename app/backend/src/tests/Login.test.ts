@@ -269,7 +269,7 @@ describe('Pessoas Usuárias e Credenciais de acesso', () => {
           password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
         };
 
-        sinon.stub(UserModel, 'findOne').resolves(execute as UserModel);
+        sinon.stub(UserModel, 'findOne').resolves(execute as unknown as UserModel);
       });
 
       afterEach(() => {
@@ -328,6 +328,7 @@ describe('Pessoas Usuárias e Credenciais de acesso', () => {
         expect(response.body).to.deep.equal(expected);
       });
     });
+
     describe('Com um token inválido', () => {
       const expected = { message: 'Token must be a valid token' };
 
@@ -358,6 +359,7 @@ describe('Pessoas Usuárias e Credenciais de acesso', () => {
         expect(response.body).to.deep.equal(expected);
       });
     });
+
     describe('Com um token válido', () => {
       const token = sign(
         { id: 1, role: 'admin' },

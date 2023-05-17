@@ -14,13 +14,47 @@ export async function getAll(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export async function getById(req: Request, res: Response, next: NextFunction) {
+export async function finishMatch(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params;
 
-    const match = await matchService.getById(+id);
+    const finishedMatch = await matchService.finishMatch(+id);
 
-    return res.status(200).json(match);
+    return res.status(200).json(finishedMatch);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateMatchInProgress(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = req.params;
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+
+    await matchService.updateMatchInProgress(+id, +homeTeamGoals, +awayTeamGoals);
+
+    return res.status(200).end();
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function create(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals } = req.body;
+
+    const newMatch = await matchService.create(
+      +homeTeamId,
+      +awayTeamId,
+      +homeTeamGoals,
+      +awayTeamGoals,
+    );
+
+    return res.status(201).json(newMatch);
   } catch (error) {
     next(error);
   }

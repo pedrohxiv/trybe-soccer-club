@@ -5,6 +5,7 @@ import chaiHttp = require('chai-http');
 
 import { app } from '../app';
 import TeamModel from '../database/models/Team';
+import { allTeams } from './mocks/Team.mock';
 
 chai.use(chaiHttp);
 
@@ -13,28 +14,16 @@ const { expect } = chai;
 describe('Times', () => {
   describe('Lista todos os times', () => {
     beforeEach(() => {
-      const execute = [
-        { id: 1, teamName: 'Real Madrid' },
-        { id: 2, teamName: 'Barcelona' },
-        { id: 3, teamName: 'Manchester United' },
-        { id: 4, teamName: 'Liverpool' },
-        { id: 5, teamName: 'Bayern Munich' },
-      ];
+      const execute = allTeams;
 
-      sinon.stub(TeamModel, 'findAll').resolves(execute as TeamModel[]);
+      sinon.stub(TeamModel, 'findAll').resolves(execute as unknown as TeamModel[]);
     });
 
     afterEach(() => {
       (TeamModel.findAll as sinon.SinonStub).restore();
     });
 
-    const expected = [
-      { id: 1, teamName: 'Real Madrid' },
-      { id: 2, teamName: 'Barcelona' },
-      { id: 3, teamName: 'Manchester United' },
-      { id: 4, teamName: 'Liverpool' },
-      { id: 5, teamName: 'Bayern Munich' },
-    ];
+    const expected = allTeams;
 
     it('Verifica se a função retorna uma resposta com status 200', async () => {
       const response = await chai.request(app).get('/teams');
@@ -90,7 +79,7 @@ describe('Times', () => {
 
     describe('Com um id válido', () => {
       beforeEach(() => {
-        const execute = { id: 1, teamName: 'Real Madrid' };
+        const execute = allTeams[0];
 
         sinon.stub(TeamModel, 'findByPk').resolves(execute as unknown as TeamModel);
       });
@@ -99,7 +88,7 @@ describe('Times', () => {
         (TeamModel.findByPk as sinon.SinonStub).restore();
       });
 
-      const expected = { id: 1, teamName: 'Real Madrid' };
+      const expected = allTeams[0];
 
       it('Verifica se a função retorna uma resposta com status 200', async () => {
         const response = await chai.request(app).get('/teams/1');
